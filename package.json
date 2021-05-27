@@ -1,0 +1,64 @@
+{
+  "author": {
+    "name": "Hasan Karahan",
+    "email": "hasan.karahan@blackhan.com",
+    "url": "https://github.com/hsk81"
+  },
+  "contributors": [
+    {
+      "name": "Hasan Karahan",
+      "email": "hasan.karahan@blackhan.com",
+      "url": "https://github.com/hsk81"
+    }
+  ],
+  "description": "deprecated methods",
+  "devDependencies": {
+    "@babel/cli": "^7.14.3",
+    "@babel/core": "^7.14.3",
+    "@babel/plugin-transform-runtime": "^7.14.3",
+    "@babel/preset-env": "^7.14.2",
+    "@types/chai": "^4.2.18",
+    "@types/chai-spies": "^1.0.3",
+    "@types/mocha": "^8.2.2",
+    "@typescript-eslint/eslint-plugin": "4.25.0",
+    "@typescript-eslint/parser": "4.25.0",
+    "chai": "^4.3.4",
+    "chai-spies": "^1.0.0",
+    "coveralls": "^3.1.0",
+    "eslint": "^7.27.0",
+    "minami": "^1.2.3",
+    "mocha": "^8.4.0",
+    "nyc": "^15.1.0",
+    "source-map-loader": "^3.0.0",
+    "typedoc": "^0.20.36",
+    "typescript": "^4.2.4",
+    "webpack": "^5.37.1",
+    "webpack-cli": "^4.7.0",
+    "yargs": "^17.0.1"
+  },
+  "files": [
+    "dist/lib"
+  ],
+  "keywords": [
+    "module"
+  ],
+  "license": "ISC",
+  "main": "dist/lib/index.js",
+  "name": "@dizmo/functions-deprecated",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "scripts": {
+    "build": "node ./cli/run-build.js",
+    "clean": "node ./cli/run-clean.js",
+    "cover": "node ./cli/run-test.js --cover",
+    "docs": "node ./cli/run-docs.js",
+    "lint": "node ./cli/run-lint.js",
+    "prepack": "node ./cli/run-prepack.js",
+    "prepare": "npm run -- build --prepack",
+    "test": "node ./cli/run-test.js"
+  },
+  "types": "dist/lib/index.d.ts",
+  "version": "0.0.0"
+}
