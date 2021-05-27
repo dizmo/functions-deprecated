@@ -119,4 +119,4 @@ npm publish --access=public
 
 ## Copyright
 
- © 2021 [Hasan Karahan](https://github.com/hsk81)
+ © 2021 [dizmo AG](https://dizmo.com/), Switzerland
