@@ -4,7 +4,7 @@
 
 # @dizmo/functions-deprecated
 
-A decorator to deprecate class methods.
+A decorator to deprecate class methods: It takes an optional message (or function) and returns the original method, where a `[DEPRECATED] Class.method: message` text is printed *once* upon invoking the deprecated method (using `console.warn`).
 
 ## Usage
 
@@ -17,19 +17,54 @@ npm install @dizmo/functions-deprecated --save
 ### Require
 
 ```javascript
-import '@dizmo/functions-deprecated';
+import { deprecated } from '@dizmo/functions-deprecated';
+import { original } from '@dizmo/functions-deprecated';
 ```
 
 ### Example(s)
 
 ```javascript
 class MyClass {
+    @deprecated
+    method1() { ... }
+
     @deprecated('message')
-    method() {
-        ...
-    }
+    method2() { ... }
+
+    @deprecated((self, key) => 'message')
+    method3() { ... }
 }
 ```
+
+..where `self instanceof MyClass` and `key === 'method3'`.
+
+```javascript
+const instance = new MyClass();
+original(instance.method).bind(instance)();
+```
+
+..where `bind(instance)` is required!
+
+```javascript
+class MyClass {
+    @deprecated
+    static method1() { ... }
+
+    @deprecated('message')
+    static method2() { ... }
+
+    @deprecated((self, key) => 'message')
+    static method3() { ... }
+}
+```
+
+..where `self === MyClass` and `key === 'method3'`.
+
+```javascript
+original(MyClass.method).bind(MyClass)();
+```
+
+..where `bind(MyClass)` is required!
 
 ## Development
 
