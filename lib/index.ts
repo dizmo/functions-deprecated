@@ -4,12 +4,12 @@
 export declare type Message =
     string | ((self: any, key: string) => string | undefined);
 export declare type Indexer =
-    (self: any, key: string) => { class_name: string, key: string };
+    (self: any, key: string) => { name: string, key: string };
 /**
  * Deprecates a class method.
  *
  * @param message deprecation text
- * @param indexer optional key mapper (defaults to `[class_name].[key]`)
+ * @param indexer optional key mapper (defaults to `[name].[key]`)
  * @returns deprecated class method
  */
 export function deprecated(
@@ -23,20 +23,20 @@ export function deprecated(
  * @ignore
  */
 export function deprecated(
-    arg0: Message | any, arg1?: Indexer | string, arg3?: PropertyDescriptor,
+    arg0: Message | any, arg1?: Indexer | string, arg2?: PropertyDescriptor,
 ): Function | void {
-    if (typeof arg0 === 'string' ||
-        typeof arg0 === 'function' ||
-        typeof arg0 === 'undefined'
+    if (typeof arg0 === 'string'
+     || typeof arg0 === 'function' && !arg2?.value && !arg2?.get && !arg2?.set
+     || typeof arg0 === 'undefined'
     ) {
-        if (typeof arg1 === 'function' ||
-            typeof arg1 === 'undefined'
+        if (typeof arg1 === 'function'
+         || typeof arg1 === 'undefined'
         ) {
             return _deprecated(arg0, arg1);
         }
     }
-    return _deprecated(undefined)(
-        arg0 as any, arg1 as string, arg3
+    _deprecated(undefined)(
+        arg0 as any, arg1 as string, arg2
     );
 }
 interface DeprecatedFunction extends Function {
@@ -53,25 +53,25 @@ function _deprecated(
             method: Function, callback: (w: DeprecatedFunction) => void
         ) => {
             const wrapped = function (this: any, ...args: any[]) {
-                const class_name = this.name ?? this.constructor?.name ?? '';
+                const name = this.name ?? this.constructor?.name ?? '';
                 const index = indexer ? indexer(this, key) : {
-                    class_name, key
+                    name: name, key
                 };
-                if (warn[index.class_name] === undefined) {
-                    warn[index.class_name] = {};
+                if (warn[index.name] === undefined) {
+                    warn[index.name] = {};
                 }
-                if (warn[index.class_name][index.key] === undefined) {
+                if (warn[index.name][index.key] === undefined) {
                     if (typeof message === 'function') {
                         const text = message(this, index.key);
                         if (typeof text === 'string') {
-                            console.warn(`[DEPRECATED] ${class_name}.${key}: ${text}`);
+                            console.warn(`[DEPRECATED] ${name}.${key}: ${text}`);
                         }
                     } else if (typeof message === 'string') {
-                        console.warn(`[DEPRECATED] ${class_name}.${key}: ${message}`);
+                        console.warn(`[DEPRECATED] ${name}.${key}: ${message}`);
                     } else {
-                        console.warn(`[DEPRECATED] ${class_name}.${key}`);
+                        console.warn(`[DEPRECATED] ${name}.${key}`);
                     }
-                    warn[index.class_name][index.key] = false;
+                    warn[index.name][index.key] = false;
                 }
                 return method.apply(this, args);
             };
@@ -108,9 +108,9 @@ function _deprecated(
 export function original<T extends Function>(
     method: T
 ) {
-    const deprecated_method = method as Function as DeprecatedFunction;
-    if (typeof deprecated_method.__deprecated__ === 'function') {
-        return deprecated_method.__deprecated__ as T;
+    const m = method as Function as DeprecatedFunction;
+    if (typeof m.__deprecated__ === 'function') {
+        return m.__deprecated__ as T;
     } else {
         return method;
     }

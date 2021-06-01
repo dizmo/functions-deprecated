@@ -4,7 +4,7 @@
 
 # @dizmo/functions-deprecated
 
-A decorator to deprecate class methods: It takes an optional message (or function) and returns the original method, where a `[DEPRECATED] Class.method: message` text is printed *once* upon invoking the deprecated method (using `console.warn`).
+A decorator to deprecate class methods (and properties): It takes an optional message (or function) and returns the original method, where a `[DEPRECATED] Class.method: message` text is printed at most *once* upon invoking the deprecated method (using `console.warn`).
 
 ## Usage
 

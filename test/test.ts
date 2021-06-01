@@ -81,6 +81,101 @@ describe('deprecated', () => {
     });
 });
 
+describe('deprecated w/accessors', () => {
+    const sandbox = chai.spy.sandbox();
+    beforeEach(() => {
+        sandbox.on(console, 'warn');
+    });
+    afterEach(() => {
+        sandbox.restore();
+    });
+    it('should deprecate class property getter', () => {
+        class MyClass {
+            @deprecated
+            public get property() {
+                expect(this).to.be.instanceOf(MyClass);
+                return 0;
+            }
+        }
+        const instance_1 = new MyClass();
+        instance_1.property;
+        instance_1.property;
+        const instance_2 = new MyClass();
+        instance_2.property;
+        instance_2.property;
+        expect(console.warn).to.have.been.called.once.with(
+            '[DEPRECATED] MyClass.property'
+        );
+    });
+    it('should deprecate class property setter', () => {
+        class MyClass {
+            @deprecated
+            public set property(value: number) {
+                expect(this).to.be.instanceOf(MyClass);
+            }
+        }
+        const instance_1 = new MyClass();
+        instance_1.property = 1;
+        instance_1.property = 2;
+        const instance_2 = new MyClass();
+        instance_2.property = 3;
+        instance_2.property = 4;
+        expect(console.warn).to.have.been.called.once.with(
+            '[DEPRECATED] MyClass.property'
+        );
+    });
+    it('should deprecate class property getter (& setter)', () => {
+        class MyClass {
+            @deprecated
+            public get property() {
+                expect(this).to.be.instanceOf(MyClass);
+                return 0;
+            }
+            public set property(value: number) {
+                expect(this).to.be.instanceOf(MyClass);
+            }
+        }
+        const instance_1 = new MyClass();
+        instance_1.property;
+        instance_1.property = 1;
+        instance_1.property;
+        instance_1.property = 2;
+        const instance_2 = new MyClass();
+        instance_2.property;
+        instance_2.property = 3;
+        instance_2.property;
+        instance_2.property = 4;
+        expect(console.warn).to.have.been.called.once.with(
+            '[DEPRECATED] MyClass.property'
+        );
+    });
+    it('should deprecate class property (getter &) setter', () => {
+        class MyClass {
+            @deprecated
+            public get property() {
+                expect(this).to.be.instanceOf(MyClass);
+                return 0;
+            }
+            public set property(value: number) {
+                expect(this).to.be.instanceOf(MyClass);
+            }
+        }
+        const instance_1 = new MyClass();
+        instance_1.property;
+        instance_1.property = 1;
+        instance_1.property;
+        instance_1.property = 2;
+        const instance_2 = new MyClass();
+        instance_2.property;
+        instance_2.property = 3;
+        instance_2.property;
+        instance_2.property = 4;
+        expect(console.warn).to.have.been.called.once.with(
+            '[DEPRECATED] MyClass.property'
+        );
+    });
+});
+
 describe('deprecated w/static methods', () => {
     const sandbox = chai.spy.sandbox();
     beforeEach(() => {
@@ -135,6 +230,81 @@ describe('deprecated w/static methods', () => {
     });
 });
 
+describe('deprecated w/static accessors', () => {
+    const sandbox = chai.spy.sandbox();
+    beforeEach(() => {
+        sandbox.on(console, 'warn');
+    });
+    afterEach(() => {
+        sandbox.restore();
+    });
+    it('should deprecate class property getter', () => {
+        class MyClass {
+            @deprecated
+            public static get property() {
+                expect(this).to.eq(MyClass)
+                return 0;
+            }
+        }
+        MyClass.property;
+        MyClass.property;
+        expect(console.warn).to.have.been.called.once.with(
+            '[DEPRECATED] MyClass.property'
+        );
+    });
+    it('should deprecate class property setter', () => {
+        class MyClass {
+            @deprecated
+            public static set property(value: number) {
+                expect(this).to.eq(MyClass)
+            }
+        }
+        MyClass.property = 1;
+        MyClass.property = 2;
+        expect(console.warn).to.have.been.called.once.with(
+            '[DEPRECATED] MyClass.property'
+        );
+    });
+    it('should deprecate class property getter (& setter)', () => {
+        class MyClass {
+            @deprecated
+            public static get property() {
+                expect(this).to.eq(MyClass)
+                return 0;
+            }
+            public static set property(value: number) {
+                expect(this).to.eq(MyClass)
+            }
+        }
+        MyClass.property;
+        MyClass.property = 1;
+        MyClass.property;
+        MyClass.property = 2;
+        expect(console.warn).to.have.been.called.once.with(
+            '[DEPRECATED] MyClass.property'
+        );
+    });
+    it('should deprecate class property (getter &) setter', () => {
+        class MyClass {
+            @deprecated
+            public static get property() {
+                expect(this).to.eq(MyClass)
+                return 0;
+            }
+            public static set property(value: number) {
+                expect(this).to.eq(MyClass)
+            }
+        }
+        MyClass.property;
+        MyClass.property = 1;
+        MyClass.property;
+        MyClass.property = 2;
+        expect(console.warn).to.have.been.called.once.with(
+            '[DEPRECATED] MyClass.property'
+        );
+    });
+});
+
 describe('deprecated w/indexer', () => {
     const sandbox = chai.spy.sandbox();
     beforeEach(() => {
@@ -148,7 +318,7 @@ describe('deprecated w/indexer', () => {
             @deprecated(undefined, (self, key) => {
                 expect(self).to.be.instanceOf(MyClass);
                 expect(key).to.eq('method');
-                return { class_name: self.constructor.name, key };
+                return { name: self.constructor.name, key };
             })
             public method() {
                 expect(this).to.be.instanceOf(MyClass);
@@ -169,7 +339,7 @@ describe('deprecated w/indexer', () => {
             @deprecated('a message', (self, key) => {
                 expect(self).to.be.instanceOf(MyClass);
                 expect(key).to.eq('method');
-                return { class_name: self.constructor.name, key };
+                return { name: self.constructor.name, key };
             })
             public method() {
                 expect(this).to.be.instanceOf(MyClass);
@@ -194,7 +364,7 @@ describe('deprecated w/indexer', () => {
             }, (self, key) => {
                 expect(self).to.be.instanceOf(MyClass);
                 expect(key).to.eq('method');
-                return { class_name: self.constructor.name, key };
+                return { name: self.constructor.name, key };
             })
             public method() {
                 expect(this).to.be.instanceOf(MyClass);
@@ -225,7 +395,7 @@ describe('deprecated w/indexer & static methods', () => {
             @deprecated(undefined, (self, key) => {
                 expect(self).to.not.be.instanceOf(MyClass);
                 expect(key).to.eq('method');
-                return { class_name: self.constructor.name, key };
+                return { name: self.constructor.name, key };
             })
             public static method() {
                 expect(this).to.not.be.instanceOf(MyClass);
@@ -243,7 +413,7 @@ describe('deprecated w/indexer & static methods', () => {
                 expect(self).to.not.be.instanceOf(MyClass);
                 expect(self).to.eq(MyClass);
                 expect(key).to.eq('method');
-                return { class_name: self.constructor.name, key };
+                return { name: self.constructor.name, key };
             })
             public static method() {
                 expect(this).to.not.be.instanceOf(MyClass);
@@ -267,7 +437,7 @@ describe('deprecated w/indexer & static methods', () => {
                 expect(self).to.not.be.instanceOf(MyClass);
                 expect(self).to.eq(MyClass);
                 expect(key).to.eq('method');
-                return { class_name: self.constructor.name, key };
+                return { name: self.constructor.name, key };
             })
             public static method() {
                 expect(this).to.not.be.instanceOf(MyClass);
