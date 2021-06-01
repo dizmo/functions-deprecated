@@ -24,9 +24,26 @@ describe('deprecated', () => {
     afterEach(() => {
         sandbox.restore();
     });
-    it('should deprecate class method', () => {
+    it('should deprecate class method [1]', () => {
         class MyClass {
             @deprecated
+            public method() {
+                expect(this).to.be.instanceOf(MyClass);
+            }
+        }
+        const instance_1 = new MyClass();
+        instance_1.method();
+        instance_1.method();
+        const instance_2 = new MyClass();
+        instance_2.method();
+        instance_2.method();
+        expect(console.warn).to.have.been.called.once.with(
+            '[DEPRECATED] MyClass.method'
+        );
+    });
+    it('should deprecate class method [2]', () => {
+        class MyClass {
+            @deprecated()
             public method() {
                 expect(this).to.be.instanceOf(MyClass);
             }
