@@ -1,9 +1,9 @@
 /* eslint @typescript-eslint/explicit-module-boundary-types: [off] */
 /* eslint @typescript-eslint/no-explicit-any: [off] */
 /* eslint @typescript-eslint/ban-types: [off] */
-export declare type Message =
+declare type Message =
     string | ((self: any, key: string) => string | undefined);
-export declare type Indexer =
+declare type Indexer =
     (self: any, key: string) => { name: string, key: string };
 /**
  * Deprecates a class method.
@@ -105,7 +105,7 @@ function _deprecated(
 /**
  * @returns original method **unbound** to the original instance.
  */
-export function original<T extends Function>(
+export function undeprecated<T extends Function>(
     method: T
 ) {
     const m = method as Function as DeprecatedFunction;
